@@ -19,10 +19,7 @@ let peerConnection;
 let currentCallId;
 let isMuted = false;
 
-// ** IMPORTANT: Make sure this matches your signaling server address **
-// If server.js is on the same machine, 'ws://localhost:8080' is correct.
-// If on a different machine on your LAN, use 'ws://<server_machine_ip>:8080'
-// const socket = new WebSocket('ws://192.168.20.159:8080');
+
 
 const configuration = {
     iceServers: [
@@ -179,9 +176,7 @@ async function createCall() {
     socket.send(JSON.stringify({ type: 'create_room', callId: currentCallId }));
 
     // createPeerConnection will be called after 'room_created' or similar ack from server
-    // to ensure the server is ready for offers.
-    // Or, create it here and then send offer after room confirmation.
-    // For this example, let's assume room_created will trigger next steps.
+
 
     setupControls.style.display = 'none';
     callControls.style.display = 'block';
