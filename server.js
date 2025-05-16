@@ -175,9 +175,6 @@ wss.on('connection', ws => {
 // Start the HTTP server
 httpServer.listen(PORT, HOST, () => { // Add HOST here
     console.log(`Server is listening on <span class="math-inline">\{HOST\}\:</span>{PORT}`);
-    // The code to print local IP addresses is mostly for local dev,
-    // Render will give you a public URL.
-    // You can keep it or comment it out for cleaner Render logs.
     if (process.env.NODE_ENV !== 'production') { // Only show local IPs if not in production
         const { networkInterfaces } = require('os');
         const nets = networkInterfaces();
