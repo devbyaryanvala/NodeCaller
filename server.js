@@ -3,6 +3,8 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
+const PORT = process.env.PORT || 8080; // Use Render's port or 8080 for local
+const HOST = '0.0.0.0'; // Listen on all available network interfaces
 
 // Create an HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -48,7 +50,7 @@ const httpServer = http.createServer((req, res) => {
 const wss = new WebSocket.Server({ server: httpServer }); // Key change: attach to httpServer
 
 const rooms = {}; // Store call rooms and their participants
-const PORT = 8080; // Define the port once
+// const PORT = 8080; // Define the port once
 
 console.log(`HTTP and WebSocket server started on http://localhost:${PORT} and ws://localhost:${PORT}`);
 console.log(`Access from other devices on the network via this machine's local IP, e.g., http://<your_local_ip>:${PORT}`);
@@ -170,19 +172,21 @@ wss.on('connection', ws => {
     });
 });
 
-// Start the HTTP server (which also hosts the WebSocket server)
-httpServer.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-    // You can add a function here to print out local IP addresses
-    // to make it easier for the user.
-    const { networkInterfaces } = require('os');
-    const nets = networkInterfaces();
-    console.log("You can access this server from other devices on your network using one of these IPs:");
-    for (const name of Object.keys(nets)) {
-        for (const net of nets[name]) {
-            // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
-            if (net.family === 'IPv4' && !net.internal) {
-                console.log(`  Interface ${name}: http://${net.address}:${PORT}`);
+// Start the HTTP server
+httpServer.listen(PORT, HOST, () => { // Add HOST here
+    console.log(`Server is listening on <span class="math-inline">\{HOST\}\:</span>{PORT}`);
+    // The code to print local IP addresses is mostly for local dev,
+    // Render will give you a public URL.
+    // You can keep it or comment it out for cleaner Render logs.
+    if (process.env.NODE_ENV !== 'production') { // Only show local IPs if not in production
+        const { networkInterfaces } = require('os');
+        const nets = networkInterfaces();
+        console.log("For local development, you might use one of these IPs:");
+        for (const name of Object.keys(nets)) {
+            for (const net of nets[name]) {
+                if (net.family === 'IPv4' && !net.internal) {
+                    console.log(`  Interface <span class="math-inline">\{name\}\: http\://</span>{net.address}:${PORT}`);
+                }
             }
         }
     }

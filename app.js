@@ -10,6 +10,8 @@ const muteButton = document.getElementById('muteButton');
 const endCallButton = document.getElementById('endCallButton');
 const setupControls = document.getElementById('setupControls');
 const callControls = document.getElementById('callControls');
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const socket = new WebSocket(`<span class="math-inline">\{protocol\}//</span>{window.location.host}`);
 
 // --- WebRTC and Signaling Variables ---
 let localStream;
@@ -20,7 +22,7 @@ let isMuted = false;
 // ** IMPORTANT: Make sure this matches your signaling server address **
 // If server.js is on the same machine, 'ws://localhost:8080' is correct.
 // If on a different machine on your LAN, use 'ws://<server_machine_ip>:8080'
-const socket = new WebSocket('ws://192.168.20.159:8080');
+// const socket = new WebSocket('ws://192.168.20.159:8080');
 
 const configuration = {
     iceServers: [
